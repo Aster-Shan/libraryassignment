@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aml.library.Entity.User;
@@ -30,6 +31,14 @@ public class UserController {
         User user = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
         return ResponseEntity.ok(user);
     }
+    @PostMapping("/forgot-password")
+    public void forgotPassword(@RequestBody String email) {
+        userService.forgetpassword(email);
+    }
+    @PutMapping("/reset-password")
+public void resetPassword(@RequestParam String token, @RequestBody String newPassword) {
+    userService.resetPassword(token, newPassword);
+}
     @PostMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestBody String token) {
         try {

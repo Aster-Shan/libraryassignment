@@ -31,7 +31,12 @@ public class MediaService {
         }
         media.setStatus("borrowed");
         media.setUser(user);
-        return mediaRepository.save(media);
+        Media updatedMedia = mediaRepository.save(media);
+        String subject = "Media Borrowed Successfully";
+        String message = "You have successfully borrowed the media: " + media.getTitle() + ".";
+        notificationService.sendNotification(user, subject, message);
+
+        return updatedMedia;
     }
 
     public Media returnMedia(Long mediaId) {

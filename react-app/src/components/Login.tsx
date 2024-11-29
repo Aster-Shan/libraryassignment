@@ -27,6 +27,9 @@ const Login: React.FC = () => {
       console.error('Login failed:', error);
     }
   };
+  const handleForgotPassword = () => {
+    navigate('/forgot-password');
+  };
 
   return (
     <div>
@@ -59,7 +62,9 @@ const Login: React.FC = () => {
         <button type="submit">Login</button>
       </form>
       {error && <p className="error" role="alert">{error}</p>}
+      <button onClick={handleForgotPassword}>Forgot Password?</button>
     </div>
+   
   );
 };
 

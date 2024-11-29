@@ -2,6 +2,7 @@ package com.aml.library.Entity;
 
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -116,4 +117,17 @@ public class User {
     public void setStatus(String status) {
         this.status = status;
     }
+
+     @Column(name = "reset_token")
+    private String resetToken;
+
+    // Getters and Setters
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
 }
