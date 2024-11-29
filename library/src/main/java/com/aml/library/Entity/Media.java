@@ -97,7 +97,6 @@ public class Media {
         this.user = user;
     }
 
-
     public boolean isEligibleForRenewal() {
         return renewalCount < MAX_RENEWALS && status.equals("borrowed");
     }

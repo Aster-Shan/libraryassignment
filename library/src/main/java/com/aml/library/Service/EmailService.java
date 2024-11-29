@@ -25,8 +25,8 @@ public class EmailService {
     public void sendNotification(User user, String subject, String content) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
-        message.setSubject(subject);
-        message.setText(content);
+        message.setSubject("Email Login");
+        message.setText("Your email is now log in");
         mailSender.send(message);
     }
 

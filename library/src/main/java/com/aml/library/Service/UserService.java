@@ -60,7 +60,25 @@ import com.aml.library.repository.UserRepository;
             user.setVerificationToken(null);
             return userRepository.save(user);
         }
-    
+        public void forgetpassword(String email) {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+            
+            String resetToken = UUID.randomUUID().toString();
+            userRepository.save(user);
+            emailService.sendPasswordResetEmail(user, resetToken);
+        }
+        public void resetPassword(String token, String newPassword) {
+            User user = userRepository.findByResetToken(token)
+                    .orElseThrow(() -> new ResourceNotFoundException("Invalid reset token"));
+        
+            // Update password
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setResetToken(null);  // Clear reset token
+            userRepository.save(user);
+        }
+        
+        
         public User updateUser(User user) {
             User existingUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
