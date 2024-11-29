@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "lib": ["dom", "esnext"],
+      "allowJs": true,
+      "checkJs": false,
+      "jsx": "react-jsx",  // or "react" for older versions
+      "module": "esnext",
+      "moduleResolution": "node",
+      "strict": true,       // Enable strict type checking options
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "resolveJsonModule": true,
+      "outDir": "./dist",
+      "rootDir": "./src"
+    },
+    "include": [
+      "src/**/*",
+      "node_modules/@types"
+    ],
+    "exclude": [
+      "node_modules",
+      "dist"
+    ]
+  }
+  
