@@ -2,11 +2,14 @@ package com.aml.library.Service;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aml.library.Entity.User;
+import com.aml.library.exception.EmailServiceException;
 import com.aml.library.exception.ResourceNotFoundException;
 import com.aml.library.exception.ValidationException;
 import com.aml.library.repository.UserRepository;
@@ -14,6 +17,8 @@ import com.aml.library.repository.UserRepository;
 
     @Service
     public class UserService {
+        private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
         @Autowired
         private UserRepository userRepository;
     
@@ -22,19 +27,36 @@ import com.aml.library.repository.UserRepository;
     
         @Autowired
         private EmailService emailService;
-    
-        public User registerUser(User user) {
-            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                throw new ValidationException("Email already exists");
-            }
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setVerificationToken(UUID.randomUUID().toString());
-            user.setVerified(false);
-            user.setRole("USER");
-            User savedUser = userRepository.save(user);
-            emailService.sendVerificationEmail(savedUser);
-            return savedUser;
+
+         public User registerUser(User user) {
+        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+            throw new ValidationException("Email is required");
         }
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new ValidationException("Email already exists");
+        }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new ValidationException("Password is required");
+        }
+        
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setVerificationToken(UUID.randomUUID().toString());
+        user.setVerified(false);
+        user.setRole("USER");
+        
+        User savedUser = userRepository.save(user);
+        
+        try {
+            logger.info("Attempting to send verification email to: {}", savedUser.getEmail());
+            emailService.sendVerificationEmail(savedUser);
+            logger.info("Verification email sent successfully to: {}", savedUser.getEmail());
+        } catch (EmailServiceException e) {
+            logger.error("Failed to send verification email to: {}", savedUser.getEmail(), e);
+        }
+        
+        return savedUser;
+    }
+
     
         public User login(String email, String password) {
             User user = userRepository.findByEmail(email)
