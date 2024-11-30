@@ -1,27 +1,30 @@
 {
-    "compilerOptions": {
-      "target": "es5",
-      "lib": ["dom", "esnext"],
-      "allowJs": true,
-      "checkJs": false,
-      "jsx": "react-jsx",  // or "react" for older versions
-      "module": "esnext",
-      "moduleResolution": "node",
-      "strict": true,       // Enable strict type checking options
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "resolveJsonModule": true,
-      "outDir": "./dist",
-      "rootDir": "./src"
+  "compilerOptions": {
+    "target": "esnext",                     // Use ESNext for modern JavaScript features
+    "lib": ["dom", "esnext"],               // Include browser DOM and ESNext features
+    "jsx": "react-jsx",                     // Use React JSX transform
+    "module": "esnext",                     // Use ESNext module system
+    "moduleResolution": "node",            // Resolve modules as Node.js does
+    "strict": true,                         // Enable strict type checking
+    "esModuleInterop": true,                // Enable interoperability with ES Modules
+    "skipLibCheck": true,                   // Skip type checking for library declaration files
+    "forceConsistentCasingInFileNames": true, // Ensure consistent casing in imports
+    "resolveJsonModule": true,              // Allow importing JSON files
+    "outDir": "./dist",                     // Output directory for compiled files
+    "rootDir": "./src",                     // Root directory of source files
+    "baseUrl": ".",                         // Base URL for module resolution
+    "paths": {
+      "@/*": ["src/*"]                      // Alias for imports like "@/components"
     },
-    "include": [
-      "src/**/*",
-      "node_modules/@types"
-    ],
-    "exclude": [
-      "node_modules",
-      "dist"
-    ]
-  }
-  
+    "allowJs": true,                        // Allow JavaScript files in the project
+    "checkJs": false                        // Skip type checking for JavaScript files
+  },
+  "include": [
+    "src/**/*",                             // Include all files in src
+    "node_modules/@types"                   // Include type declarations from node_modules
+, "postcss.config.js"  ],
+  "exclude": [
+    "node_modules",                         // Exclude node_modules folder
+    "dist"                                  // Exclude output directory
+  ]
+}

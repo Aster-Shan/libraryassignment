@@ -15,16 +15,18 @@ const Navbar: React.FC = () => {
   return (
     <nav>
       <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/search">Search Media</Link></li>
+
         {!isAuthenticated && (
           <>
-            <li><Link to="/register">Register</Link></li>
-            <li><Link to="/login">Login</Link></li>
+           
           </>
         )}
         {isAuthenticated && (
           <>
+           <li><Link to="/register">Register</Link></li>
+           <li><Link to="/login">Login</Link></li>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/search">Search Media</Link></li>
             <li><Link to="/profile">Profile</Link></li>
             <li><Link to="/borrowed-media">Borrowed Media</Link></li>
             <li><Link to="/notifications">Notifications</Link></li>
