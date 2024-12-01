@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aml.library.Entity.User;
+import com.aml.library.dto.LoginResponse;
 import com.aml.library.exception.EmailServiceException;
 import com.aml.library.exception.ResourceNotFoundException;
 import com.aml.library.exception.ValidationException;
@@ -58,7 +59,7 @@ import com.aml.library.repository.UserRepository;
     }
 
     
-        public User login(String email, String password) {
+        public LoginResponse login(String email, String password) {
             User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ValidationException("Invalid email or password"));
             if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -67,7 +68,7 @@ import com.aml.library.repository.UserRepository;
             if (!user.isVerified()) {
                 throw new ValidationException("Email not verified");
             }
-            return user;
+            return new LoginResponse(user, true);
         }
     
         public User getUserByEmail(String email) {

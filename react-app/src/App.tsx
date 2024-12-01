@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import BorrowedMedia from './components/BorrowedMedia';
 import BranchManagerInventory from './components/BranchManagerInventory';
+import ForgetPassword from './components/ForgetPassword';
 import Home from './components/Home';
 import Login from './components/Login';
 import MediaTransfer from './components/MediaTransfer';
@@ -23,6 +24,7 @@ const App: React.FC = () => {
           {!isAuthenticated && <Route path="*" element={<Navigate to="/login" replace />} />}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgetPassword />} />
 
 
           <Route 

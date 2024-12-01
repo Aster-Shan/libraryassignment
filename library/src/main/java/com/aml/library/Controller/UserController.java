@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aml.library.Entity.User;
 import com.aml.library.Service.UserService;
 import com.aml.library.dto.LoginRequest;
+import com.aml.library.dto.LoginResponse;
 import com.aml.library.exception.ValidationException;
 
 
@@ -47,9 +48,13 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) {
-        User user = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
-        return ResponseEntity.ok(user);
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            LoginResponse response = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     @PostMapping("/forgot-password")
     public void forgotPassword(@RequestBody String email) {
