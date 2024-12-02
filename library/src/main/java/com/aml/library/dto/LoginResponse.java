@@ -5,13 +5,48 @@ import com.aml.library.Entity.User;
 public class LoginResponse {
     private User user;
     private boolean verified;
+    private String token;
+    private String error;
+    private String message;
+
+    public LoginResponse(String token, User user, String message) {
+        this.token = token;
+        this.user = user;
+        this.message = message;
+    }
 
     public LoginResponse(User user, boolean verified) {
         this.user = user;
         this.verified = verified;
     }
 
-    // Getters and setters
+    public LoginResponse(String token) {
+        this.token = token;
+    }
+
+ 
+    public LoginResponse(String error, boolean isError) {
+        if (isError) {
+            this.error = error;
+        }
+    }
+
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
     public User getUser() {
         return user;
     }
@@ -27,5 +62,10 @@ public class LoginResponse {
     public void setVerified(boolean verified) {
         this.verified = verified;
     }
-}
+      
+    
+   
+    }
+    
+
 

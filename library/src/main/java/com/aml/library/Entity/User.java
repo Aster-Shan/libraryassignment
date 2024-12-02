@@ -22,7 +22,7 @@ public class User {
     private String password;
     private String address;
     private String phone;
-    private String role; // Field for user role (e.g., admin, librarian, member)
+    private String role; 
     private String verificationToken;
     private boolean verified;
     private String status;
