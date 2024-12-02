@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.aml.library.Config.TokenProvider;
 import com.aml.library.Entity.User;
 import com.aml.library.dto.LoginResponse;
 import com.aml.library.exception.EmailServiceException;
@@ -29,7 +30,7 @@ import com.aml.library.repository.UserRepository;
         @Autowired
         private EmailService emailService;
 
-         public User registerUser(User user) {
+     public User registerUser(User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty()) {
             throw new ValidationException("Email is required");
         }
@@ -39,14 +40,11 @@ import com.aml.library.repository.UserRepository;
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             throw new ValidationException("Password is required");
         }
-        
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setVerificationToken(UUID.randomUUID().toString());
         user.setVerified(false);
         user.setRole("USER");
-        
         User savedUser = userRepository.save(user);
-        
         try {
             logger.info("Attempting to send verification email to: {}", savedUser.getEmail());
             emailService.sendVerificationEmail(savedUser);
@@ -54,36 +52,43 @@ import com.aml.library.repository.UserRepository;
         } catch (EmailServiceException e) {
             logger.error("Failed to send verification email to: {}", savedUser.getEmail(), e);
         }
-        
         return savedUser;
     }
 
+    public LoginResponse login(String email, String password) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
     
-        public LoginResponse login(String email, String password) {
-            User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ValidationException("Invalid email or password"));
-            if (!passwordEncoder.matches(password, user.getPassword())) {
-                throw new ValidationException("Invalid email or password");
-            }
-            if (!user.isVerified()) {
-                throw new ValidationException("Email not verified");
-            }
-            return new LoginResponse(user, true);
+        if (!user.isVerified()) {
+            throw new RuntimeException("Please verify your email address");
         }
     
-        public User getUserByEmail(String email) {
+        if (!"active".equals(user.getStatus())) {
+            throw new RuntimeException("Your account is not active. Please contact support.");
+        }
+    
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+    
+        String token = TokenProvider.createToken(user.getEmail(), user.getRole());
+    
+        return new LoginResponse(token, user, "Login successful");
+    }
+    
+     public User getUserByEmail(String email) {
             return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
         }
     
-        public User verifyUser(String token) {
+    public User verifyUser(String token) {
             User user = userRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new ResourceNotFoundException("Invalid verification token"));
             user.setVerified(true);
             user.setVerificationToken(null);
             return userRepository.save(user);
         }
-        public void forgetpassword(String email) {
+    public void forgetpassword(String email) {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
             
@@ -91,18 +96,16 @@ import com.aml.library.repository.UserRepository;
             userRepository.save(user);
             emailService.sendPasswordResetEmail(user, resetToken);
         }
-        public void resetPassword(String token, String newPassword) {
+     public void resetPassword(String token, String newPassword) {
             User user = userRepository.findByResetToken(token)
                     .orElseThrow(() -> new ResourceNotFoundException("Invalid reset token"));
-        
-            // Update password
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setResetToken(null);  // Clear reset token
             userRepository.save(user);
         }
         
         
-        public User updateUser(User user) {
+    public User updateUser(User user) {
             User existingUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
             existingUser.setName(user.getName());

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../tailwind.css";
 
@@ -8,25 +8,22 @@ interface LoginCredentials {
   password: string;
 }
 
+interface LoginResponse {
+  token?: string;
+  user?: {
+    id: number;
+    email: string;
+    name: string;
+
+  };
+  message?: string;
+}
+
 const Login: React.FC = () => {
   const [credentials, setCredentials] = useState<LoginCredentials>({ email: '', password: '' });
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check API availability on component mount
-    checkApiAvailability();
-  }, []);
-
-  const checkApiAvailability = async () => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:8080'}/api/health`);
-      console.log('API health check:', response.data);
-    } catch (error) {
-      console.error('API health check failed:', error);
-    }
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -36,37 +33,34 @@ const Login: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
-    console.log('Attempting login with API URL:', API_URL);
-
+    
+    const API_URL = 'http://localhost:8080';
+  
     try {
-      const response = await axios.post(`${API_URL}/api/users/login`, credentials, {
+      const response = await axios.post<LoginResponse>(`${API_URL}/api/users/login`, credentials, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Login response:', response.data);
-      
-      if (response.data.verified) {
-        localStorage.setItem('user', JSON.stringify(response.data));
+  
+      const { token, user, message } = response.data;
+      if (token) {
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        console.log('Token saved:', token);
+        navigate('/');
+      } else if (user) {
+        console.log('User logged in:', user);
+        localStorage.setItem('user', JSON.stringify(user));
         navigate('/');
       } else {
-        setError('Please verify your email before logging in. Check your inbox for the verification link.');
+        setError(message || 'Login successful, but no token or user data returned. Please contact support.');
       }
     } catch (error) {
-      console.error('Full error object:', error);
-      
       if (axios.isAxiosError(error)) {
-        console.error('Axios error details:', error.response?.data, error.response?.status, error.response?.headers);
-        if (error.response) {
-          setError(`Server error: ${error.response.status} - ${error.response.data.message || 'Unknown error'}`);
-        } else if (error.request) {
-          setError('No response received from server. Please check your internet connection.');
-        } else {
-          setError(`Error setting up request: ${error.message}`);
-        }
+        setError(`Login failed: ${error.response?.data?.message || 'Unknown error'}`);
       } else {
-        setError('An unexpected error occurred. Please try again.');
+        setError('An unexpected error occurred.');
       }
     } finally {
       setIsLoading(false);

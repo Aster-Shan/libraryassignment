@@ -5,10 +5,10 @@ import BranchManagerInventory from './components/BranchManagerInventory';
 import ForgetPassword from './components/ForgetPassword';
 import Home from './components/Home';
 import Login from './components/Login';
+import MediaSearch from './components/MediaSearch';
 import MediaTransfer from './components/MediaTransfer';
 import Navbar from './components/Navbar';
 import Profile from './components/Profile';
-import ProtectedRoute from './components/ProtectedRoute';
 import Register from './components/Register';
 
 const App: React.FC = () => {
@@ -21,53 +21,29 @@ const App: React.FC = () => {
       <div className="App">
         <Navbar />
         <Routes>
-          {!isAuthenticated && <Route path="*" element={<Navigate to="/login" replace />} />}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* Public Routes */}
+          <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
+          <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/" />} />
           <Route path="/forgot-password" element={<ForgetPassword />} />
 
+          {/* Protected Routes for Authenticated Users */}
+          {isAuthenticated && (
+            <>
+              <Route path="/" element={<Home />} />
+              <Route path="/search" element={<MediaSearch />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/borrowed-media" element={<BorrowedMedia />} />
+              {isBranchManager && (
+                <>
+                  <Route path="/branch-manager/inventory" element={<BranchManagerInventory />} />
+                  <Route path="/branch-manager/transfer" element={<MediaTransfer />} />
+                </>
+              )}
+            </>
+          )}
 
-          <Route 
-            path="/" 
-            element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <Home />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/profile" 
-            element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <Profile />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/borrowed-media" 
-            element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <BorrowedMedia />
-              </ProtectedRoute>
-            } 
-          />
-
-          <Route 
-            path="/branch-manager/inventory" 
-            element={
-              <ProtectedRoute isAuthenticated={isAuthenticated && isBranchManager}>
-                <BranchManagerInventory />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/branch-manager/transfer" 
-            element={
-              <ProtectedRoute isAuthenticated={isAuthenticated && isBranchManager}>
-                <MediaTransfer />
-              </ProtectedRoute>
-            } 
-          />
+          {/* Catch-all Route: Redirect any undefined route to login if not authenticated */}
+          <Route path="*" element={!isAuthenticated ? <Navigate to="/login" replace /> : <Navigate to="/" replace />} />
         </Routes>
       </div>
     </Router>
