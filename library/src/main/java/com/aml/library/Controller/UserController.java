@@ -48,14 +48,18 @@ public class UserController {
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            LoginResponse response = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new LoginResponse(null, null, e.getMessage()));
-        }
+public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    try {
+        String email = request.getEmail();
+        String password = request.getPassword();
+        LoginResponse response = userService.login(email, password);
+
+        return ResponseEntity.ok(response);
+    } catch (Exception e) {
+        System.out.println(e);
+        return ResponseEntity.badRequest().body(new LoginResponse(null,null, e.getMessage()));
     }
+}
 
     @PostMapping("/forgot-password")
     public void forgotPassword(@RequestBody String email) {

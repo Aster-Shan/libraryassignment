@@ -42,7 +42,6 @@ import com.aml.library.repository.UserRepository;
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setVerificationToken(UUID.randomUUID().toString());
-        user.setVerified(false);
         user.setRole("USER");
         User savedUser = userRepository.save(user);
         try {
@@ -58,14 +57,6 @@ import com.aml.library.repository.UserRepository;
     public LoginResponse login(String email, String password) {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
-    
-        if (!user.isVerified()) {
-            throw new RuntimeException("Please verify your email address");
-        }
-    
-        if (!"active".equals(user.getStatus())) {
-            throw new RuntimeException("Your account is not active. Please contact support.");
-        }
     
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
@@ -84,7 +75,6 @@ import com.aml.library.repository.UserRepository;
     public User verifyUser(String token) {
             User user = userRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new ResourceNotFoundException("Invalid verification token"));
-            user.setVerified(true);
             user.setVerificationToken(null);
             return userRepository.save(user);
         }

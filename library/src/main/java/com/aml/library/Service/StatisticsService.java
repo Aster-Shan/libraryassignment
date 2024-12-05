@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aml.library.dto.MediaStats;
-import com.aml.library.dto.UserStats;
 import com.aml.library.repository.MediaRepository;
 import com.aml.library.repository.UserRepository;
 
@@ -32,14 +31,14 @@ public class StatisticsService {
         return mediaStats;
     }
 
-    public UserStats getUserStats() {
-        long totalUsers = userRepository.count();
-        long activeUsers = userRepository.countByStatus("active");
+   /*  public UserStats getUserStats() {
+        //long totalUsers = userRepository.count();
+      //  long activeUsers = userRepository.countByStatus("active");
 
         UserStats userStats = new UserStats();
         userStats.setTotalUsers(totalUsers);
-        userStats.setActiveUsers(activeUsers);
+      //  userStats.setActiveUsers(activeUsers);
 
         return userStats;
-    }
+    }*/
 }

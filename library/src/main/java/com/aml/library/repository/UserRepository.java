@@ -10,8 +10,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     // This method is now explicitly defined
     Optional<User> findByVerificationToken(String token);
-    long count();
-    long countByStatus(String status);
     Optional<User> findByResetToken(String resetToken);
 
 }
