@@ -24,13 +24,11 @@ public class User {
     private String phone;
     private String role; 
     private String verificationToken;
-    private boolean verified;
-    private String status;
+   
 
     @OneToMany(mappedBy = "user")
     private Set<Media> borrowedMedia;
-
-    // Getters and Setters
+    
     public Long getId() {
         return id;
     }
@@ -94,15 +92,6 @@ public class User {
     public void setBorrowedMedia(Set<Media> borrowedMedia) {
         this.borrowedMedia = borrowedMedia;
     }
-     public boolean isVerified() {
-        return this.verified;
-    }
-
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
-    }
-
     public void setVerificationToken(String verificationToken) {
         this.verificationToken = verificationToken;
     }
@@ -110,13 +99,7 @@ public class User {
     public String getVerificationToken() {
         return this.verificationToken;
     }
-    public String getStatus() {
-        return status;
-    }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
      @Column(name = "reset_token")
     private String resetToken;
