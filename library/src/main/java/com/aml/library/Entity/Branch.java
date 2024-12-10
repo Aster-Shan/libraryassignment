@@ -20,8 +20,8 @@ public class Branch {
     private String address;
     private String city;
 
-    @OneToMany(mappedBy = "branch")
-    private Set<Media> inventory;
+//    @OneToMany(mappedBy = "branch")
+//    private Set<Media> inventory;
 
     // Getters and Setters
     public Long getId() {
@@ -48,13 +48,14 @@ public class Branch {
         this.address = address;
     }
 
-    public Set<Media> getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(Set<Media> inventory) {
-        this.inventory = inventory;
-    }
+//    public Set<Media> getInventory() {
+//        return inventory;
+//    }
+//
+//    public void setInventory(Set<Media> inventory) {
+//        this.inventory = inventory;
+//    }
+    
     public String getCity() {
         return this.city;
     }

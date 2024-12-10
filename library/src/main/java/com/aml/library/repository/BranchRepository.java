@@ -5,3 +5,4 @@ import com.aml.library.Entity.Branch;
 
 public interface BranchRepository extends JpaRepository<Branch, Long> {
 }
+

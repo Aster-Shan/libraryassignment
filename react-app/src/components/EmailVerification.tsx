@@ -19,9 +19,18 @@ const EmailVerification: React.FC = () => {
       }
 
       try {
-        await axios.post('/api/users/verify-email', { token });
+        const API_URL = 'http://localhost:8080';
+        //await axios.post('/api/users/verify-email', { token });
+
+        const response = await axios.post(`${API_URL}/api/users/verify-email`,'',{
+          params: { token : token },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
         setStatus('Email verified successfully!');
-        setTimeout(() => navigate('/login'), 10000); 
+        setTimeout(() => navigate('/login'), 3000); 
       } catch (error) {
         if (axios.isAxiosError(error)) {
           setError(error.response?.data?.message || 'Email verification failed. Please try again.');
@@ -37,14 +46,15 @@ const EmailVerification: React.FC = () => {
 
   return (
     <div className="email-verification">
-      <h2>Email Verification</h2>
-      {error ? (
-        <p className="error" role="alert">{error}</p>
-      ) : (
-        <p role="status">{status}</p>
+      {error && (
+        <div className="mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+          <strong>Error:</strong> {error}
+        </div>
       )}
       {status === 'Email verified successfully!' && (
-        <p>You will be redirected to the login page shortly. If not, please <a href="/login">click here</a>.</p>
+        <div className="mt-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
+        <strong>Success:</strong><p>You will be redirected to the login page shortly. If not, please <a href="/login">click here</a>.</p>
+        </div>
       )}
     </div>
   );

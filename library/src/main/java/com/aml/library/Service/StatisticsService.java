@@ -24,9 +24,9 @@ public class StatisticsService {
         long borrowedMedia = totalMedia - availableMedia;  // Assuming two statuses: available and borrowed
 
         MediaStats mediaStats = new MediaStats();
-        mediaStats.setTotalMedia(totalMedia);
-        mediaStats.setAvailableMedia(availableMedia);
-        mediaStats.setBorrowedMedia(borrowedMedia);
+//        mediaStats.setTotalMedia(totalMedia);
+//        mediaStats.setAvailableMedia(availableMedia);
+//        mediaStats.setBorrowedMedia(borrowedMedia);
 
         return mediaStats;
     }

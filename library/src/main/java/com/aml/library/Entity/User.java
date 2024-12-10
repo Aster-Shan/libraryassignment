@@ -22,12 +22,14 @@ public class User {
     private String password;
     private String address;
     private String phone;
-    private String role; 
+    private String role;
+
+    private boolean verified;
     private String verificationToken;
    
 
-    @OneToMany(mappedBy = "user")
-    private Set<Media> borrowedMedia;
+//    @OneToMany(mappedBy = "user")
+//    private Set<Media> borrowedMedia;
     
     public Long getId() {
         return id;
@@ -85,13 +87,13 @@ public class User {
         this.role = role;
     }
 
-    public Set<Media> getBorrowedMedia() {
-        return borrowedMedia;
-    }
-
-    public void setBorrowedMedia(Set<Media> borrowedMedia) {
-        this.borrowedMedia = borrowedMedia;
-    }
+//    public Set<Media> getBorrowedMedia() {
+//        return borrowedMedia;
+//    }
+//
+//    public void setBorrowedMedia(Set<Media> borrowedMedia) {
+//        this.borrowedMedia = borrowedMedia;
+//    }
     public void setVerificationToken(String verificationToken) {
         this.verificationToken = verificationToken;
     }
@@ -112,5 +114,13 @@ public class User {
     public void setResetToken(String resetToken) {
         this.resetToken = resetToken;
     }
+
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public void setVerified(boolean verified) {
+		this.verified = verified;
+	}
 
 }
