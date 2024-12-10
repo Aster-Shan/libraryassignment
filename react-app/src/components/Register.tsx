@@ -9,6 +9,8 @@ interface RegisterData {
   password: string;
   address: string;
   phone: string;
+  verified: boolean;
+  status:string;
 }
 
 const Register: React.FC = () => {
@@ -18,6 +20,8 @@ const Register: React.FC = () => {
     password: '',
     address: '',
     phone: '',
+    verified: true,  
+    status: 'active' 
   });
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');

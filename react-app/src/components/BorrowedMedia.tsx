@@ -14,6 +14,7 @@ interface Media {
 }
 
 const BorrowedMedia: React.FC = () => {
+  const token = localStorage.getItem('authToken');
   const [borrowedMedia, setBorrowedMedia] = useState<Media[]>([]);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -24,12 +25,19 @@ const BorrowedMedia: React.FC = () => {
   }, []);
 
   const fetchBorrowedMedia = async () => {
-    try {
-      const response = await axios.get('/api/media/borrowed');
-      setBorrowedMedia(response.data);
-    } catch (error) {
-      setError(handleApiError(error));
-    }
+
+      await axios.get<Media[]>('/api/media/borrowed',{
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }).then(response => {
+        setBorrowedMedia(response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+
   };
 
   const handleReturn = async (mediaId: number) => {

@@ -1,7 +1,8 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../tailwind.css";
+import AuthContext from '../contexts/AuthContext';
 
 interface LoginCredentials {
   email: string;
@@ -14,7 +15,7 @@ interface LoginResponse {
     id: number;
     email: string;
     name: string;
-
+    role: string;
   };
   message?: string;
 }
@@ -23,6 +24,7 @@ const Login: React.FC = () => {
   const [credentials, setCredentials] = useState<LoginCredentials>({ email: '', password: '' });
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,29 +35,18 @@ const Login: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
-    const API_URL = 'http://localhost:8080';
-  
     try {
-      const response = await axios.post<LoginResponse>(`${API_URL}/api/users/login`, credentials, {
+      const response = await axios.post<LoginResponse>(`/api/users/login`, credentials, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
   
       const { token, user, message } = response.data;
-      if (token) {
-        localStorage.setItem('authToken', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        console.log('Token saved:', token);
+      if (token&&user) {
+        login(user, token);
         navigate('/');
-      } else if (user) {
-        console.log('User logged in:', user);
-        localStorage.setItem('user', JSON.stringify(user));
-        navigate('/');
-      } else {
-        setError(message || 'Login successful, but no token or user data returned. Please contact support.');
-      }
+      } 
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(`Login failed: ${error.response?.data?.message || 'Unknown error'}`);
@@ -127,8 +118,8 @@ const Login: React.FC = () => {
           </div>
 
           {error && (
-            <div className="text-red-600 text-sm" role="alert">
-              {error}
+            <div className="mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+              <strong>Error:</strong> {error}
             </div>
           )}
 

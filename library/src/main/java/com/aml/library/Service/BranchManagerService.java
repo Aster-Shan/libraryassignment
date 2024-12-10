@@ -33,21 +33,21 @@ public class BranchManagerService {
         return mediaRepository.findByBranchCity(manager.getBranch().getCity());
     }
 
-    public Media transferMedia(Long mediaId, Long fromBranchId, Long toBranchId) {
-        Media media = mediaRepository.findById(mediaId)
-            .orElseThrow(() -> new ResourceNotFoundException("Media not found"));
-        Branch fromBranch = branchRepository.findById(fromBranchId)
-            .orElseThrow(() -> new ResourceNotFoundException("From branch not found"));
-        Branch toBranch = branchRepository.findById(toBranchId)
-            .orElseThrow(() -> new ResourceNotFoundException("To branch not found"));
-
-        if (!media.getBranch().equals(fromBranch)) {
-            throw new ValidationException("Media is not in the specified from branch");
-        }
-
-        media.setBranch(toBranch);
-        return mediaRepository.save(media);
-    }
+//    public Media transferMedia(Long mediaId, Long fromBranchId, Long toBranchId) {
+//        Media media = mediaRepository.findById(mediaId)
+//            .orElseThrow(() -> new ResourceNotFoundException("Media not found"));
+//        Branch fromBranch = branchRepository.findById(fromBranchId)
+//            .orElseThrow(() -> new ResourceNotFoundException("From branch not found"));
+//        Branch toBranch = branchRepository.findById(toBranchId)
+//            .orElseThrow(() -> new ResourceNotFoundException("To branch not found"));
+//
+//        if (!media.getBranch().equals(fromBranch)) {
+//            throw new ValidationException("Media is not in the specified from branch");
+//        }
+//
+//        media.setBranch(toBranch);
+//        return mediaRepository.save(media);
+//    }
 
     public BranchManager getBranchManagerByUserId(Long userId) {
         Optional<BranchManager> branchManager = branchManagerRepository.findByUserId(userId);

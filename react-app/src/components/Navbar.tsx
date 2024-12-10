@@ -1,15 +1,13 @@
-import React from 'react';
+import AuthContext from '../contexts/AuthContext';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAuthenticated = !!localStorage.getItem('authToken');
-  const isBranchManager = user?.role === 'BRANCH_MANAGER';
+  const { user, isAuthenticated, logout } = useContext(AuthContext);
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    logout(); 
     navigate('/login');
   };
 
@@ -54,7 +52,7 @@ const Navbar: React.FC = () => {
               <li>
                 <Link to="/profile" className="hover:text-blue-400 transition duration-300">Profile</Link>
               </li>
-              {isBranchManager && (
+              {user?.role === 'BRANCH_MANAGER' && (
                 <>
                   <li>
                     <Link to="/branch-manager/inventory" className="hover:text-blue-400 transition duration-300">Branch Inventory</Link>

@@ -29,11 +29,12 @@ public class BranchManagerController {
         return ResponseEntity.ok(branchManagerService.getInventoryForCity(managerId));
     }
 
-    @PostMapping("/transfer")
-    public ResponseEntity<Media> transferMedia(@RequestParam Long mediaId,
-                                               @RequestParam Long fromBranchId,
-                                               @RequestParam Long toBranchId) {
-        return ResponseEntity.ok(branchManagerService.transferMedia(mediaId, fromBranchId, toBranchId));
-    }
+//    @PostMapping("/transfer")
+//    public ResponseEntity<Media> transferMedia(@RequestParam Long mediaId,
+//                                               @RequestParam Long fromBranchId,
+//                                               @RequestParam Long toBranchId) {
+//        return ResponseEntity.ok(branchManagerService.transferMedia(mediaId, fromBranchId, toBranchId));
+//    }
+    
 }
 

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.aml.library.Config.TokenProvider;
+import com.aml.library.Config.security.TokenProvider;
 import com.aml.library.Entity.User;
 import com.aml.library.dto.LoginResponse;
 import com.aml.library.exception.EmailServiceException;
@@ -29,6 +29,9 @@ import com.aml.library.repository.UserRepository;
     
         @Autowired
         private EmailService emailService;
+        
+        @Autowired
+        private TokenProvider tokenProvider;
 
      public User registerUser(User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty()) {
@@ -43,6 +46,7 @@ import com.aml.library.repository.UserRepository;
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setVerificationToken(UUID.randomUUID().toString());
         user.setRole("USER");
+        user.setVerified(false);
         User savedUser = userRepository.save(user);
         try {
             logger.info("Attempting to send verification email to: {}", savedUser.getEmail());
@@ -56,13 +60,17 @@ import com.aml.library.repository.UserRepository;
 
     public LoginResponse login(String email, String password) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ValidationException("Invalid credentials"));
     
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new ValidationException("Invalid credentials");
         }
     
-        String token = TokenProvider.createToken(user.getEmail(), user.getRole());
+        if (!user.isVerified()) {
+        	throw new ValidationException("User inactive, please verify via e-mail.");
+        }
+        
+        String token = tokenProvider.createToken(user.getEmail(),user.getRole());
     
         return new LoginResponse(token, user, "Login successful");
     }
@@ -75,7 +83,9 @@ import com.aml.library.repository.UserRepository;
     public User verifyUser(String token) {
             User user = userRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new ResourceNotFoundException("Invalid verification token"));
+            user.setVerified(true);
             user.setVerificationToken(null);
+            logger.info("Verification OK");
             return userRepository.save(user);
         }
     public void forgetpassword(String email) {

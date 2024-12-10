@@ -1,7 +1,5 @@
 package com.aml.library.Controller;
 
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,12 +63,13 @@ public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
     public void forgotPassword(@RequestBody String email) {
         userService.forgetpassword(email);
     }
-    @PutMapping("/reset-password")
-public void resetPassword(@RequestParam String token, @RequestBody String newPassword) {
-    userService.resetPassword(token, newPassword);
-}
+	@PutMapping("/reset-password")
+	public void resetPassword(@RequestParam String token, @RequestBody String newPassword) {
+	    userService.resetPassword(token, newPassword);
+	}
+	
     @PostMapping("/verify-email")
-    public ResponseEntity<String> verifyEmail(@RequestBody String token) {
+    public ResponseEntity<String> verifyEmail(@RequestParam("token") String token) {
         try {
             userService.verifyUser(token);
             return ResponseEntity.ok("Email verified successfully!");

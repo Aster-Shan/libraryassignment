@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface Media {
@@ -18,6 +18,7 @@ interface Branch {
 }
 
 const BranchManagerInventory: React.FC = () => {
+  const token = localStorage.getItem('authToken');
   const [inventory, setInventory] = useState<Media[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<number | ''>('');
@@ -36,11 +37,21 @@ const BranchManagerInventory: React.FC = () => {
 
   const fetchBranches = async () => {
     try {
-      const response = await axios.get<Branch[]>('/api/branches');
-      setBranches(response.data);
-      if (response.data.length > 0) {
-        setSelectedBranch(response.data[0].id);
-      }
+      await axios.get<Branch[]>('/api/branches',{
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }).then(response => {
+        setBranches(response.data);
+        if (response.data.length > 0) {
+          setSelectedBranch(response.data[0].id);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+      
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         navigate('/login');
