@@ -30,7 +30,7 @@ const EmailVerification: React.FC = () => {
         });
 
         setStatus('Email verified successfully!');
-        setTimeout(() => navigate('/login'), 3000); 
+        setTimeout(() => navigate('/login'), 7000); 
       } catch (error) {
         if (axios.isAxiosError(error)) {
           setError(error.response?.data?.message || 'Email verification failed. Please try again.');

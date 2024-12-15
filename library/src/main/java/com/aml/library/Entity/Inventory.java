@@ -2,6 +2,7 @@ package com.aml.library.Entity;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,7 +31,7 @@ public class Inventory {
     private static final int MAX_RENEWALS = 2;
 	
     public boolean isEligibleForRenewal() {
-        return renewalCount < MAX_RENEWALS && status.equals("borrowed");
+        return renewalCount < MAX_RENEWALS;
     }
 
 	public Long getId() {

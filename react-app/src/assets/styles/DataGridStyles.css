@@ -1,0 +1,20 @@
+.sticky-cell {
+    position: sticky;
+    right: 0;
+    z-index: 2; 
+    background-color: white; 
+    border-left: 1px solid #e0e0e0; 
+}
+
+.sticky-header {
+    position: sticky;
+    right: 0;
+    z-index: 3; 
+    background-color: #c3d4d4; 
+    border-left: 1px solid #e0e0e0; 
+}
+
+.data-grid-container {
+    position: relative;
+     /* Needed for sticky to work */
+}

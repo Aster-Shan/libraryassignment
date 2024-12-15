@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.aml.library.exception.MediaNotEligibleForRenewalException;
+
 @Entity
 @Table(name="media_circulation")
 public class MediaCirculation {
@@ -27,15 +29,16 @@ public class MediaCirculation {
 	
 	private LocalDate borrowDate;
 	private LocalDate dueDate;
+	private LocalDate returnDate;
 	
-	private boolean reutrned;
+	private boolean returned;
 	
     public void renew() {
         if (this.inventory.isEligibleForRenewal()) {
         	this.inventory.setRenewalCount(this.inventory.getRenewalCount()+1);
             dueDate = dueDate.plusWeeks(2); // Extend by 2 weeks
         } else {
-            throw new IllegalStateException("Media is not eligible for renewal");
+        	throw new MediaNotEligibleForRenewalException("Media is not eligible for renewal. Maximun renewals reached.");
         }
     }
 
@@ -79,11 +82,19 @@ public class MediaCirculation {
 		this.dueDate = dueDate;
 	}
 
-	public boolean isReutrned() {
-		return reutrned;
+	public boolean isReturned() {
+		return returned;
 	}
 
-	public void setReutrned(boolean reutrned) {
-		this.reutrned = reutrned;
+	public void setReturned(boolean reutrned) {
+		this.returned = reutrned;
+	}
+
+	public LocalDate getReturnDate() {
+		return returnDate;
+	}
+
+	public void setReturnDate(LocalDate returnedDate) {
+		this.returnDate = returnedDate;
 	}
 }

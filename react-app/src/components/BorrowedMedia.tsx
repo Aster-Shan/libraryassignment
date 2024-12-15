@@ -1,138 +1,132 @@
-import { CalendarDaysIcon, HandRaisedIcon } from '@heroicons/react/24/outline';
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { handleApiError } from '../utils/apiUtils';
+import axios, { AxiosError } from 'axios';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import Modal from './Modal'; // Import the Modal component
 
-interface Media {
-  id: number;
-  title: string;
-  type: string;
-  status: string;
-  dueDate: string;
-  renewalCount: number;
+interface BorrowedMedia {
+    id: number;
+    title: string;
+    author: string;
+    borrowDate: string;
+    dueDate: string;
+    returned: boolean;
+    returnDate: string;
+    branchName: string;
+    branchFullAddress: string;
+    renewalCount: number;
 }
 
 const BorrowedMedia: React.FC = () => {
-  const token = localStorage.getItem('authToken');
-  const [borrowedMedia, setBorrowedMedia] = useState<Media[]>([]);
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate();
+    const token = localStorage.getItem('authToken');
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const user = localStorage.getItem('user');
+    const [borrowedMediaList, setBorrowedMediaList] = useState<BorrowedMedia[]>([]);
+    const [modalMessage, setModalMessage] = useState<string | null>(null);
+    const [error, setError] = useState<string>('');
 
-  useEffect(() => {
-    fetchBorrowedMedia();
-  }, []);
+    useEffect(() => {
+        fetchBorrowedMedia();
+    }, []);
 
-  const fetchBorrowedMedia = async () => {
-
-      await axios.get<Media[]>('/api/media/borrowed',{
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
+    const fetchBorrowedMedia = async () => {
+        const userId = user ? JSON.parse(user).id : {};
+        try {
+            const response = await axios.get<BorrowedMedia[]>('/api/media-circulation/search', {
+                headers,
+                params: { userId },
+            });
+            setBorrowedMediaList(response.data);
+        } catch (error) {
+            console.error('Error:', error);
+            setError('Failed to fetch borrowed media.');
         }
-      }).then(response => {
-        setBorrowedMedia(response.data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+    };
 
-  };
+    const handleRenew = async (mediaCirculationId: number) => {
+        try {
+            const response = await axios.post<BorrowedMedia>('/api/media-circulation/renew', {}, {
+                headers,
+                params: { mediaCirculationId },
+            });
+            setModalMessage(`Media renewed successfully. New due date: ${response.data.dueDate}`);
+        } catch (error: unknown) {
+            if (error instanceof AxiosError && error.response) {
+                setModalMessage(`Failed to renew the media. ${error.response.data.message}`);
+            } else {
+                setModalMessage('Failed to renew the media. Please try again.');
+            }
+        }
+    };
 
-  const handleReturn = async (mediaId: number) => {
-    try {
-      await axios.post(`/api/media/return/${mediaId}`);
-      setBorrowedMedia(prevMedia => prevMedia.filter(media => media.id !== mediaId));
-      setSuccessMessage('Media returned successfully');
-    } catch (error) {
-      setError('Failed to return the media. Please try again.');
-      console.error('Error returning media:', error);
-    }
-  };
+    const closeModal = () => {
+        setModalMessage(null);
+        window.location.reload(); // Refresh the page after dismissing the modal
+    };
 
-  const handleRenew = async (mediaId: number) => {
-    try {
-      const response = await axios.post<Media>(`/api/media/renew/${mediaId}`);
-      setBorrowedMedia(prevMedia =>
-        prevMedia.map(media =>
-          media.id === mediaId ? response.data : media
-        )
-      );
-      setSuccessMessage(`Media renewed successfully. New due date: ${response.data.dueDate}`);
-    } catch (error) {
-      setError('Failed to renew the media. Please try again.');
-      console.error('Error renewing media:', error);
-    }
-  };
-
-  return (
-    <div className="borrowed-media">
-      <h2>Your Borrowed Media</h2>
-      {error && <p className="error" role="alert">{error}</p>}
-      {successMessage && <p className="success" role="status">{successMessage}</p>}
-      {borrowedMedia.length === 0 ? (
-        <p>You have no borrowed media at the moment.</p>
-      ) : (
-        <ul>
-          {borrowedMedia.map(media => (
-            <li key={media.id} className="media-item">
-              <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:max-w-none lg:grid-cols-2">
-                <div className="max-w-xl lg:max-w-lg">
-                  <h3 className="text-2xl font-semibold text-white">{media.title}</h3>
-                  <p>Type: {media.type}</p>
-                  <p>Status: {media.status}</p>
-                  <p>Due Date: {new Date(media.dueDate).toLocaleDateString()}</p>
-                  {media.status === 'Returned' && (
-                    <p>Return Date: {new Date(media.dueDate).toLocaleDateString()}</p>
-                  )}
-                  <div className="media-actions mt-4 flex gap-x-4">
+    const columns: GridColDef[] = [
+        { field: 'title', headerName: 'Title', flex: 1 },
+        { field: 'author', headerName: 'Author', flex: 1 },
+        { field: 'borrowDate', headerName: 'Borrow Date', flex: 1 },
+        { field: 'dueDate', headerName: 'Due Date', flex: 1 },
+        { field: 'branchName', headerName: 'Branch Name', flex: 1 },
+        { field: 'remainingRenewals', 
+            headerName: 'Remaining Renewals', 
+            flex: 1, 
+            valueGetter: (value, row) => { return (row.returned)? 'N/A':2-row.renewalCount },},
+        {
+            field: 'action',
+            headerName: 'Action',
+            flex: 1,
+            renderCell: (params: GridRenderCellParams) => {
+                const media = params.row as BorrowedMedia;
+                let buttonText = "Renew";
+                let isDisabled = false;
+                let tooltip = "";
+    
+                if (media.returned) {
+                    buttonText = "Returned";
+                    isDisabled = true;
+                    tooltip = `Returned on ${media.returnDate}`;
+                } else if (media.renewalCount > 1) {
+                    buttonText = "Unrenewable";
+                    isDisabled = true;
+                    tooltip = "Maximum renewal reached";
+                }
+    
+                return (
                     <button
-                      className="rounded-md bg-red-500 px-3 py-2 text-white hover:bg-red-400"
-                      onClick={() => handleReturn(media.id)}
+                        type="button"
+                        className={`font-semibold leading-6 ${isDisabled ? 'text-gray-400 cursor-not-allowed' : 'text-indigo-600 hover:text-indigo-500'}`}
+                        onClick={() => !isDisabled && handleRenew(media.id)}
+                        disabled={isDisabled}
+                        title={tooltip}
                     >
-                      Return
+                        {buttonText}
                     </button>
-                    {media.renewalCount < 2 && (
-                      <button
-                        className="rounded-md bg-indigo-500 px-3 py-2 text-white hover:bg-indigo-400"
-                        onClick={() => handleRenew(media.id)}
-                      >
-                        Renew
-                      </button>
-                    )}
-                    {media.renewalCount >= 2 && (
-                      <span className="text-sm text-gray-400">Maximum renewals reached</span>
-                    )}
-                  </div>
-                </div>
-                <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:pt-2">
-                  <div className="flex flex-col items-start">
-                    <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
-                      <CalendarDaysIcon aria-hidden="true" className="text-white" />
-                    </div>
-                    <dt className="mt-4 text-base font-semibold text-white">Due Date</dt>
-                    <dd className="mt-2 text-base text-gray-400">
-                      {new Date(media.dueDate).toLocaleDateString()}
-                    </dd>
-                  </div>
-                  <div className="flex flex-col items-start">
-                    <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
-                      <HandRaisedIcon aria-hidden="true" className="text-white" />
-                    </div>
-                    <dt className="mt-4 text-base font-semibold text-white">Renewal Count</dt>
-                    <dd className="mt-2 text-base text-gray-400">
-                      {media.renewalCount} {media.renewalCount >= 2 ? 'Max reached' : ''}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+                );
+            },
+        },
+    ];
+
+    return (
+        <div className="p-6 max-w-7xl mx-auto">
+            <h2 className="text-2xl font-bold mb-6">Your Borrowed Media</h2>
+            <div className="h-[440px] w-full">
+                <DataGrid
+                    sx={{
+                        '--DataGrid-containerBackground': '#c3d4d4',
+                    }}
+                    rows={borrowedMediaList}
+                    columns={columns}
+                    getRowId={(row) => row.id}
+                    pageSizeOptions={[25, 50, 100]}
+                    disableRowSelectionOnClick
+                />
+            </div>
+            {error && <p className="mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">{error}</p>}
+            {modalMessage && <Modal message={modalMessage} onClose={closeModal} />}
+        </div>
+    );
 };
 
 export default BorrowedMedia;

@@ -62,15 +62,15 @@ const BorrowMedia: React.FC = () => {
                 headers,
                 params: { mediaId: media?.id, branchId: selectedBranch, userId: userId },
             });
-            setDialogData(response.data); // Show dialog with server response
+            setDialogData(response.data); 
         } catch (error) {
             console.error("Error Borrowing book", error);
         }
     };
 
     const handleDialogConfirm = () => {
-        setDialogData(null); // Close the dialog
-        navigate('/borrowed-media'); // Navigate to borrowed-media
+        setDialogData(null); 
+        navigate('/borrowed-media'); 
     };
 
     return (
@@ -134,8 +134,13 @@ const BorrowMedia: React.FC = () => {
                     </div>
                 )}
                 <button
+                    disabled={!selectedBranch}
                     type="submit"
-                    className="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full p-3 rounded-md transition focus:outline-none focus:ring-2 ${
+                        !selectedBranch
+                            ? 'bg-gray-400 text-gray-800 cursor-not-allowed'
+                            : 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500'
+                    }`}
                 >
                     Borrow Media
                 </button>

@@ -53,11 +53,5 @@ public class MediaController {
 //        User user = userService.getUserByEmail(authentication.getName());
 //        return ResponseEntity.ok(mediaService.getBorrowedMedia(user));
 //    }
-//
-//    @PostMapping("/renew/{mediaId}")
-//    public ResponseEntity<Media> renewMedia(@PathVariable Long mediaId, Authentication authentication) {
-//        User user = userService.getUserByEmail(authentication.getName());
-//        return ResponseEntity.ok(mediaService.renewMedia(mediaId, user));
-//    }
 }
 
