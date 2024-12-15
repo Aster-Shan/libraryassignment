@@ -55,10 +55,10 @@ const Navbar: React.FC = () => {
               {user?.role === 'BRANCH_MANAGER' && (
                 <>
                   <li>
-                    <Link to="/branch-manager/inventory" className="hover:text-blue-400 transition duration-300">Branch Inventory</Link>
+                    <Link to="/inventory" className="hover:text-blue-400 transition duration-300">Inventory</Link>
                   </li>
                   <li>
-                    <Link to="/branch-manager/transfer" className="hover:text-blue-400 transition duration-300">Transfer Media</Link>
+                    <Link to="/media-circulation" className="hover:text-blue-400 transition duration-300">Media Circulation</Link>
                   </li>
                 </>
               )}

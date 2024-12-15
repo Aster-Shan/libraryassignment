@@ -17,6 +17,7 @@ public class Media {
     private String title;
     private String genre;
     private String author;
+    private String format;
     private String description;
     private int publicationYear;
 
@@ -59,6 +60,14 @@ public class Media {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+	
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	public String getDescription() {

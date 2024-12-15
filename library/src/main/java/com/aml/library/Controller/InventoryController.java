@@ -16,6 +16,7 @@ import com.aml.library.Entity.Branch;
 import com.aml.library.Entity.Inventory;
 import com.aml.library.Service.InventoryService;
 import com.aml.library.dto.BorrowResponse;
+import com.aml.library.dto.InventoryDTO;
 import com.aml.library.exception.ValidationException;
 
 @RestController
@@ -32,9 +33,14 @@ public class InventoryController {
 
 	@GetMapping("/search-branches")
 	public ResponseEntity<List<Branch>> searchBranches(@RequestParam Long mediaId) {
-		return ResponseEntity.ok(inventoryService.searchBrabchByMedia(mediaId));
+		return ResponseEntity.ok(inventoryService.searchBranchByMedia(mediaId));
 	}
 
+	@GetMapping("/by-branch-id")
+	public ResponseEntity<List<Inventory>> searchByBranchId(@RequestParam Long branchId) {
+		return ResponseEntity.ok(inventoryService.searchByBranch(branchId));
+	}
+	
 	@PostMapping("/borrow")
 	public ResponseEntity<?> borrow(@RequestParam Long mediaId, @RequestParam Long branchId,
 			@RequestParam Long userId) {
@@ -51,5 +57,11 @@ public class InventoryController {
 		}
 		
 		return ResponseEntity.ok(borrowResponse);
+	}
+	
+	@PostMapping("/transfer")
+	public ResponseEntity<InventoryDTO> transfer(@RequestParam Long inventoryId, @RequestParam Long toBranchId){
+		InventoryDTO inventoryDTO = inventoryService.transfer(inventoryId, toBranchId);
+		return ResponseEntity.ok(inventoryDTO);
 	}
 }

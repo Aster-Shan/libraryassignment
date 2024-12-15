@@ -16,14 +16,14 @@ import com.aml.library.Entity.Branch;
 import com.aml.library.Service.BranchService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/branches")
 @CrossOrigin(origins = "http://localhost:3000")
 public class BranchController {
 
     @Autowired
     private BranchService branchService;
     
-    @GetMapping("/branches")
+    @GetMapping("/all")
     public ResponseEntity<List<Branch>> getAllBranches() {
         List<Branch> branches = branchService.getAllBranches();
         return ResponseEntity.ok(branches);

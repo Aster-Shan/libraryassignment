@@ -9,19 +9,28 @@ import com.aml.library.Entity.Branch;
 import com.aml.library.Entity.Inventory;
 import com.aml.library.Entity.MediaCirculation;
 import com.aml.library.dto.BorrowResponse;
+import com.aml.library.dto.BranchDTO;
+import com.aml.library.dto.InventoryDTO;
 import com.aml.library.exception.ValidationException;
+import com.aml.library.repository.BranchRepository;
 import com.aml.library.repository.InventoryRepository;
 
 @Service
 public class InventoryService {
 	@Autowired
 	private InventoryRepository inventoryRepository;
+	@Autowired
+	private BranchRepository branchRepository;
 	
 	@Autowired
 	private MediaCirculationService mediaCirculationService;
 	
-	public List<Branch> searchBrabchByMedia(Long mediaId){
+	public List<Branch> searchBranchByMedia(Long mediaId){
 		return inventoryRepository.searchBranchByMediaId(mediaId);
+	}
+	
+	public List<Inventory> searchByBranch(Long branchId) {
+		return inventoryRepository.searchByBranchId(branchId);
 	}
 
 	public BorrowResponse borrowMedia(Long mediaId, Long branchId, Long userId) {
@@ -53,6 +62,33 @@ public class InventoryService {
 		return borrowResponse;
 		
 	}
+
+	public InventoryDTO transfer(Long inventoryId, Long toBranchId) {
+		
+		Inventory inventory = inventoryRepository.getById(inventoryId);
+		Branch toBranch = branchRepository.getById(toBranchId);
+		
+		inventory.setBranch(toBranch);
+		
+		inventoryRepository.save(inventory);
+		
+		Branch branch = inventory.getBranch();
+		BranchDTO branchDTO = new BranchDTO();
+		
+		branchDTO.setId(branch.getId());
+		branchDTO.setAddress(branch.getAddress());
+		branchDTO.setCity(branch.getCity());
+		
+		InventoryDTO inventoryDTO = new InventoryDTO(inventory.getId(),
+				inventory.getMedia(), 
+				branchDTO, 
+				inventory.getStatus(), 
+				inventory.getRenewalCount());
+		
+		return inventoryDTO;
+	}
+
+	
 	
 	
 }
