@@ -1,18 +1,18 @@
 import React, { useContext } from 'react';
-import { Navigate, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AuthContext from './contexts/AuthContext';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import BorrowedMedia from './components/BorrowedMedia';
-import InventoryManagement from './components/InventoryManagement';
+import BorrowMedia from './components/BorrowMedia';
+import EmailVerification from './components/EmailVerification';
 import ForgetPassword from './components/ForgetPassword';
 import Home from './components/Home';
+import InventoryManagement from './components/InventoryManagement';
 import Login from './components/Login';
-import MediaSearch from './components/MediaSearch';
 import MediaCirculationManagement from './components/MediaCirculationManagement';
+import MediaSearch from './components/MediaSearch';
 import Navbar from './components/Navbar';
 import Profile from './components/Profile';
 import Register from './components/Register';
-import EmailVerification from './components/EmailVerification';
-import BorrowMedia from './components/BorrowMedia';
+import AuthContext from './contexts/AuthContext';
 
 const App: React.FC = () => {
   const { isAuthenticated, user } = useContext(AuthContext);
@@ -43,6 +43,11 @@ const App: React.FC = () => {
                 <>
                   <Route path="/inventory" element={<InventoryManagement />} />
                   <Route path="/media-circulation" element={<MediaCirculationManagement />} />
+                  <Route path="/" element={<Navigate to="/inventory" replace />} />
+                  <Route path="/search" element={<Navigate to="/inventory" replace />}/>
+                  <Route path="/profile" element={<Navigate to="/inventory" replace />}/>
+                  <Route path="/borrowed-media" element={<Navigate to="/inventory" replace />}/>
+                  <Route path="/borrow-media" element={<Navigate to="/inventory" replace />}/>
                 </>
               ) : (
                 <>

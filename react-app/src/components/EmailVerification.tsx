@@ -19,6 +19,7 @@ const EmailVerification: React.FC = () => {
       }
 
       try {
+        await axios.post('/api/users/verify-email', { token });
         const API_URL = 'http://localhost:8080';
         //await axios.post('/api/users/verify-email', { token });
 
@@ -46,14 +47,21 @@ const EmailVerification: React.FC = () => {
 
   return (
     <div className="email-verification">
+         <h2>Email Verification</h2>
+      {error ? (
+        <p className="error" role="alert">{error}</p>
+      ) : (
+        <p role="status">{status}</p>
+
       {error && (
         <div className="mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
           <strong>Error:</strong> {error}
         </div>
       )}
       {status === 'Email verified successfully!' && (
+       
         <div className="mt-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
-        <strong>Success:</strong><p>You will be redirected to the login page shortly. If not, please <a href="/login">click here</a>.</p>
+        <strong>Success:</strong> <p>You will be redirected to the login page shortly. If not, please <a href="/login">click here</a>.</p><p>You will be redirected to the login page shortly. If not, please <a href="/login">click here</a>.</p>
         </div>
       )}
     </div>

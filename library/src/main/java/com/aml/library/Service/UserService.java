@@ -46,7 +46,6 @@ import com.aml.library.repository.UserRepository;
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setVerificationToken(UUID.randomUUID().toString());
         user.setRole("USER");
-        user.setVerified(false);
         User savedUser = userRepository.save(user);
         try {
             logger.info("Attempting to send verification email to: {}", savedUser.getEmail());
@@ -66,9 +65,6 @@ import com.aml.library.repository.UserRepository;
             throw new ValidationException("Invalid credentials");
         }
     
-        if (!user.isVerified()) {
-        	throw new ValidationException("User inactive, please verify via e-mail.");
-        }
         
         String token = tokenProvider.createToken(user.getEmail(),user.getRole());
     
