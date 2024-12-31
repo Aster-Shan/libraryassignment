@@ -1,19 +1,19 @@
 import React, { useContext } from 'react';
-import { Navigate, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AuthContext from './contexts/AuthContext';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import BorrowedMedia from './components/BorrowedMedia';
-import InventoryManagement from './components/InventoryManagement';
+import BorrowMedia from './components/BorrowMedia';
+import EmailVerification from './components/EmailVerification';
 import ForgetPassword from './components/ForgetPassword';
 import Home from './components/Home';
+import InventoryManagement from './components/InventoryManagement';
 import Login from './components/Login';
-import MediaSearch from './components/MediaSearch';
 import MediaCirculationManagement from './components/MediaCirculationManagement';
+import MediaSearch from './components/MediaSearch';
 import Navbar from './components/Navbar';
+import Notifications from './components/Notifications';
 import Profile from './components/Profile';
 import Register from './components/Register';
-import EmailVerification from './components/EmailVerification';
-import BorrowMedia from './components/BorrowMedia';
-import Notifications from './components/Notifications';
+import AuthContext from './contexts/AuthContext';
 
 const App: React.FC = () => {
   const { isAuthenticated, user } = useContext(AuthContext);
