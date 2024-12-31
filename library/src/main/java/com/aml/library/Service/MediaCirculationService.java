@@ -22,6 +22,8 @@ public class MediaCirculationService {
 	private InventoryRepository inventoryRepository;
 	@Autowired
 	private MediaCirculationRepository mediaCirculationRepository;
+	@Autowired
+	private NotificationService notificationService;
 
 	public MediaCirculation insertTransaction(Long inventoryId, Long userId) {
 		
@@ -54,6 +56,9 @@ public class MediaCirculationService {
 	    }
 		
 		mediaCirculationRepository.save(mc);
+		
+        notificationService.reconcileNotifications(mc.getUser());
+		
 		return mc;
 		
 	}
@@ -73,5 +78,7 @@ public class MediaCirculationService {
 		
 		inventoryRepository.save(inventory);
 		mediaCirculationRepository.save(mediaCirculation);
+		
+		notificationService.reconcileNotifications(mediaCirculation.getUser());
 	}
 }

@@ -12,6 +12,7 @@ export interface User {
     name: string;
     role: string;
     address: string;
+    phone: string;
 }
 
 export interface MediaCirculation {
@@ -38,4 +39,13 @@ export interface Branch {
     name: string;
     address: string;
     city: string;
+}
+
+export interface Notification {
+    id: number;
+    message: {
+        template: string;
+      };
+    sentAt: string;
+    transaction:MediaCirculation;
 }

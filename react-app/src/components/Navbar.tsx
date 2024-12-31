@@ -7,7 +7,7 @@ const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useContext(AuthContext);
 
   const handleLogout = () => {
-    logout(); 
+    logout();
     navigate('/login');
   };
 
@@ -36,22 +36,26 @@ const Navbar: React.FC = () => {
           {/* Show these links if the user is authenticated */}
           {isAuthenticated && (
             <>
-              <li>
-                <Link to="/" className="hover:text-blue-400 transition duration-300">Home</Link>
-              </li>
-              <li>
-                <Link to="/search" className="hover:text-blue-400 transition duration-300">Search Media</Link>
-              </li>
-             
-              <li>
-                <Link to="/borrowed-media" className="hover:text-blue-400 transition duration-300">Borrowed Media</Link>
-              </li>
-              <li>
-                <Link to="/notifications" className="hover:text-blue-400 transition duration-300">Notifications</Link>
-              </li>
-              <li>
-                <Link to="/profile" className="hover:text-blue-400 transition duration-300">Profile</Link>
-              </li>
+              {user?.role != 'BRANCH_MANAGER' && (
+                <>
+                  <li>
+                    <Link to="/" className="hover:text-blue-400 transition duration-300">Home</Link>
+                  </li>
+                  <li>
+                    <Link to="/search" className="hover:text-blue-400 transition duration-300">Search Media</Link>
+                  </li>
+
+                  <li>
+                    <Link to="/borrowed-media" className="hover:text-blue-400 transition duration-300">Borrowed Media</Link>
+                  </li>
+                  <li>
+                    <Link to="/notifications" className="hover:text-blue-400 transition duration-300">Notifications</Link>
+                  </li>
+                  <li>
+                    <Link to="/profile" className="hover:text-blue-400 transition duration-300">Profile</Link>
+                  </li>
+                </>
+              )}
               {user?.role === 'BRANCH_MANAGER' && (
                 <>
                   <li>

@@ -2,12 +2,14 @@ package com.aml.library.Entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,13 +18,17 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String message;
-    private LocalDateTime sentAt;
-
+    
+    
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "message_id")
+    private NotificationMessage message;
+    
+	private LocalDateTime sentAt;
+
+	@OneToOne
+    @JoinColumn(name = "media_circulation_id", unique = true)
+    private MediaCirculation transaction;
 
     // Getters and Setters
     public Long getId() {
@@ -33,11 +39,11 @@ public class Notification {
         this.id = id;
     }
 
-    public String getMessage() {
+    public NotificationMessage getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(NotificationMessage message) {
         this.message = message;
     }
 
@@ -48,12 +54,13 @@ public class Notification {
     public void setSentAt(LocalDateTime sentAt) {
         this.sentAt = sentAt;
     }
+    
+    public MediaCirculation getTransaction() {
+		return transaction;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public void setTransaction(MediaCirculation transaction) {
+		this.transaction = transaction;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 }

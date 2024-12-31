@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.aml.library.exception.MediaNotEligibleForRenewalException;
 
 @Entity
@@ -31,6 +33,7 @@ public class MediaCirculation {
 	private LocalDate dueDate;
 	private LocalDate returnDate;
 	
+	@ColumnDefault("false")
 	private boolean returned;
 	
     public void renew() {

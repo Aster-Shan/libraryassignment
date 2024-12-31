@@ -20,6 +20,10 @@ import com.aml.library.repository.UserRepository;
     @Service
     public class UserService {
         private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+        
+    	@Autowired
+    	private NotificationService notificationService;
+
 
         @Autowired
         private UserRepository userRepository;
@@ -72,6 +76,8 @@ import com.aml.library.repository.UserRepository;
         
         String token = tokenProvider.createToken(user.getEmail(),user.getRole());
     
+        notificationService.generateNotification(user);
+        
         return new LoginResponse(token, user, "Login successful");
     }
     
@@ -113,6 +119,10 @@ import com.aml.library.repository.UserRepository;
             existingUser.setPhone(user.getPhone());
             return userRepository.save(existingUser);
         }
+
+	public User getUser(Long id) {
+		return userRepository.getById(id);
+	}
     }
     
     

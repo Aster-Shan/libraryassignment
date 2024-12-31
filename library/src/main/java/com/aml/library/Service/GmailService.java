@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -41,7 +43,10 @@ public class GmailService {
     private static final String APPLICATION_NAME = "Gmail API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
-    private static final Set<String> SCOPES = GmailScopes.all();
+    private static final Set<String> SCOPES = new HashSet<>(Arrays.asList(
+    	    "https://www.googleapis.com/auth/gmail.send",
+    	    "https://www.googleapis.com/auth/gmail.compose"
+    	));
 
     private Gmail service;
 
