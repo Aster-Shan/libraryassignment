@@ -54,6 +54,9 @@ const Navbar: React.FC = () => {
                   <li>
                     <Link to="/profile" className="hover:text-blue-400 transition duration-300">Profile</Link>
                   </li>
+                  <li>
+                    <Link to="/change-password" className="hover:text-blue-400 transition duration-300">Password</Link>
+                  </li>
                 </>
               )}
               {user?.role === 'BRANCH_MANAGER' && (

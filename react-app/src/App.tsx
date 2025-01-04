@@ -14,6 +14,7 @@ import Register from './components/Register';
 import EmailVerification from './components/EmailVerification';
 import BorrowMedia from './components/BorrowMedia';
 import Notifications from './components/Notifications';
+import ChangePassword from './components/ChangePassword';
 
 const App: React.FC = () => {
   const { isAuthenticated, user } = useContext(AuthContext);
@@ -39,6 +40,7 @@ const App: React.FC = () => {
                                   <Route path="/" element={<Home />} />
                                   <Route path="/search" element={<MediaSearch />} />
                                   <Route path="/profile" element={<Profile />} />
+                                  <Route path="/change-password" element={<ChangePassword />} />
                                   <Route path="/borrowed-media" element={<BorrowedMedia />} />
                                   <Route path="/borrow-media" element={<BorrowMedia />} />
                                   <Route path="/notifications" element={<Notifications />} />

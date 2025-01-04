@@ -1,5 +1,7 @@
 package com.aml.library.Controller;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aml.library.Entity.User;
-import com.aml.library.Service.NotificationService;
 import com.aml.library.Service.UserService;
 import com.aml.library.dto.LoginRequest;
 import com.aml.library.dto.LoginResponse;
+import com.aml.library.dto.PassowrdChangeRequest;
+import com.aml.library.exception.ResourceNotFoundException;
 import com.aml.library.exception.ValidationException;
 
 @RestController
@@ -86,10 +89,32 @@ public class UserController {
 		User updatedUser = userService.updateUser(user);
 		return ResponseEntity.ok(updatedUser);
 	}
-	
+
+	@PostMapping("/update-password")
+	public ResponseEntity<?> updatePassword(@RequestBody PassowrdChangeRequest request) {
+	    try {
+	        User updatedUser = userService.changePassword(request.getUser(), request.getOldPassword(), request.getNewPassword());
+	        return ResponseEntity.ok(updatedUser);
+	    } catch (ValidationException e) {
+	        return ResponseEntity.badRequest().body(Map.of(
+	            "error", "Validation Error",
+	            "message", e.getMessage()
+	        ));
+	    } catch (ResourceNotFoundException e) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+	            "error", "User Not Found",
+	            "message", e.getMessage()
+	        ));
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+	            "error", "Internal Server Error",
+	            "message", "An unexpected error occurred"
+	        ));
+	    }
+	}
+
 	@GetMapping("/get-user")
-	public ResponseEntity<User> getUser(@RequestParam("token") Long id)
-	{
+	public ResponseEntity<User> getUser(@RequestParam("token") Long id) {
 		User updatedUser = userService.getUser(id);
 		return ResponseEntity.ok(updatedUser);
 	}
