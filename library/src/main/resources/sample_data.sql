@@ -1,6 +1,9 @@
 INSERT INTO `library`.`branches` (`id`, `address`, `city`, `name`) VALUES ('1', 'No. 303, Metropolitan Avenue', 'Metropol', 'Metro Ave Media, Metropol');
 INSERT INTO `library`.`branches` (`id`, `address`, `city`, `name`) VALUES ('2', 'No. 208, 7th St. Charter District', 'Liberty City', 'Charter Urban Library, Liberty');
 
+INSERT INTO `library`.`notification_message` VALUES('1', 'Your borrowed media is overdue. Please return as soon as possible.');
+INSERT INTO `library`.`notification_message` VALUES('2', 'Your borrowed media will due soon. Please return or renew if possible.');
+
 INSERT INTO `library`.`media` (`id`, `author`, `publication_year`, `title`, `genre`, `format`,`description`) 
 VALUES ('1', 'Harper Lee', '1960', 'To Kill a Mockingbird', 'Historical Fiction', 'Book', 'Set in the racially charged American South, this novel explores themes of justice, morality, and compassion through the eyes of a young girl and her father, a principled lawyer.');
 
