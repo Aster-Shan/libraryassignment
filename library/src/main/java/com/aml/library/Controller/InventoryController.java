@@ -1,6 +1,7 @@
 package com.aml.library.Controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import com.aml.library.Entity.Inventory;
 import com.aml.library.Service.InventoryService;
 import com.aml.library.dto.BorrowResponse;
 import com.aml.library.dto.InventoryDTO;
+import com.aml.library.exception.ResourceNotFoundException;
 import com.aml.library.exception.ValidationException;
 
 @RestController
@@ -40,11 +42,11 @@ public class InventoryController {
 	public ResponseEntity<List<Inventory>> searchByBranchId(@RequestParam Long branchId) {
 		return ResponseEntity.ok(inventoryService.searchByBranch(branchId));
 	}
-	
+
 	@PostMapping("/borrow")
 	public ResponseEntity<?> borrow(@RequestParam Long mediaId, @RequestParam Long branchId,
 			@RequestParam Long userId) {
-		
+
 		BorrowResponse borrowResponse;
 
 		try {
@@ -55,13 +57,18 @@ public class InventoryController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("An unexpected error in transaction" + e.getMessage());
 		}
-		
+
 		return ResponseEntity.ok(borrowResponse);
 	}
-	
+
 	@PostMapping("/transfer")
-	public ResponseEntity<InventoryDTO> transfer(@RequestParam Long inventoryId, @RequestParam Long toBranchId){
-		InventoryDTO inventoryDTO = inventoryService.transfer(inventoryId, toBranchId);
-		return ResponseEntity.ok(inventoryDTO);
+	public ResponseEntity<?> transfer(@RequestParam Long inventoryId, @RequestParam Long toBranchId) {
+		try {
+			InventoryDTO inventoryDTO = inventoryService.transfer(inventoryId, toBranchId);
+			return ResponseEntity.ok(inventoryDTO);
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body(Map.of("error", "Inventory Not Found", "message", e.getMessage()));
+		}
 	}
 }

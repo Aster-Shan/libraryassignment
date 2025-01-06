@@ -11,6 +11,7 @@ import com.aml.library.Entity.MediaCirculation;
 import com.aml.library.dto.BorrowResponse;
 import com.aml.library.dto.BranchDTO;
 import com.aml.library.dto.InventoryDTO;
+import com.aml.library.exception.ResourceNotFoundException;
 import com.aml.library.exception.ValidationException;
 import com.aml.library.repository.BranchRepository;
 import com.aml.library.repository.InventoryRepository;
@@ -65,7 +66,9 @@ public class InventoryService {
 
 	public InventoryDTO transfer(Long inventoryId, Long toBranchId) {
 		
-		Inventory inventory = inventoryRepository.getById(inventoryId);
+		Inventory inventory = inventoryRepository.findById(inventoryId)
+				.orElseThrow(() -> new ResourceNotFoundException("Inventory not found"));
+		
 		Branch toBranch = branchRepository.getById(toBranchId);
 		
 		inventory.setBranch(toBranch);

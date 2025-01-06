@@ -20,7 +20,11 @@ public class Branch {
 //    @OneToMany(mappedBy = "branch")
 //    private Set<Media> inventory;
 
-    // Getters and Setters
+    public void setCity(String city) {
+		this.city = city;
+	}
+
+	// Getters and Setters
     public Long getId() {
         return id;
     }
