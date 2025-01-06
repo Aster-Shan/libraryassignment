@@ -9,6 +9,7 @@ public class BorrowResponse {
 	private LocalDate borrowDate;
 	private LocalDate dueDate;
 	private int renewal_count;
+	private String branchAddress;
 	public String getPickup() {
 		return pickup;
 	}
@@ -45,6 +46,11 @@ public class BorrowResponse {
 	public void setRenewal_count(int renewal_count) {
 		this.renewal_count = renewal_count;
 	}
-	
+	public void setBranchAddress(String branchAddress) {
+        this.branchAddress = branchAddress;
+    }
+	public String getBranchAddress() {
+        return branchAddress;
+    }
 	
 }

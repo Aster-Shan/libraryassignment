@@ -17,14 +17,17 @@ public class Branch {
     private String address;
     private String city;
 
-//    @OneToMany(mappedBy = "branch")
-//    private Set<Media> inventory;
+    // Default constructor (required by JPA)
+    public Branch() {}
 
-    public void setCity(String city) {
-		this.city = city;
-	}
+    public Branch(Long id, String name, String address, String city) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.city = city;
+    }    
 
-	// Getters and Setters
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -49,15 +52,11 @@ public class Branch {
         this.address = address;
     }
 
-//    public Set<Media> getInventory() {
-//        return inventory;
-//    }
-//
-//    public void setInventory(Set<Media> inventory) {
-//        this.inventory = inventory;
-//    }
-    
     public String getCity() {
-        return this.city;
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }
