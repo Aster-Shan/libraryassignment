@@ -5,3 +5,4 @@ bin
 # Secrets
 library/src/main/resources/*.json
 library/src/main/resources/application.properties
+.DS_Store
